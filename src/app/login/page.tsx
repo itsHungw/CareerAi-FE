@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/context/AuthContext';
-import { LayoutDashboard, AlertCircle, Loader2, Mail, Lock } from 'lucide-react';
+import { ApiClientError } from '@/lib/axios';
+import { AlertCircle, Loader2, Mail, Lock } from 'lucide-react';
 
 export default function LoginPage() {
   const { loginWithGoogle, login } = useAuth();
@@ -15,13 +16,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      setError('Google did not return a valid credential.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     try {
       await loginWithGoogle(credentialResponse.credential);
-    } catch (err: any) {
-      setError(err.message || 'Failed to login with Google.');
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : 'Failed to login with Google.');
     } finally {
       setIsLoading(false);
     }
@@ -38,8 +44,8 @@ export default function LoginPage() {
     setError(null);
     try {
       await login(email, password);
-    } catch (err: any) {
-      setError(err.message || 'Invalid email or password.');
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +122,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-xs text-muted-notion italic">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="text-accent-notion hover:underline font-medium italic">
             Sign up
           </Link>
@@ -129,4 +135,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

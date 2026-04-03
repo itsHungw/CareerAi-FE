@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { AlertCircle, Loader2, Mail, Lock, UserPlus } from 'lucide-react';
+import { ApiClientError } from '@/lib/axios';
+import { AlertCircle, Loader2, Mail, Lock } from 'lucide-react';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -38,8 +39,8 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await register(email, password);
-    } catch (err: any) {
-      setError(err.message || 'Registration failed. Email might already exist.');
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : 'Registration failed. Email might already exist.');
     } finally {
       setIsLoading(false);
     }

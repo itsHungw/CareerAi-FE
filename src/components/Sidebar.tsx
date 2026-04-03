@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Route as RouteIcon, 
-  Briefcase, 
+import {
+  LayoutDashboard,
+  FileText,
+  Route as RouteIcon,
+  Briefcase,
   Settings,
   LogOut,
   User as UserIcon
@@ -39,7 +39,7 @@ export default function Sidebar() {
           <div className="w-8 h-8 rounded-md bg-[#37352F] flex items-center justify-center text-white shrink-0 font-bold text-lg">
             C
           </div>
-          <span className="font-semibold text-sm truncate text-[#37352F]">CareerAI Builder</span>
+          <a href="/" className="font-semibold text-sm truncate text-[#37352F]">CareerAI Builder</a>
         </div>
       </div>
 
@@ -56,14 +56,14 @@ export default function Sidebar() {
               href={item.href}
               className={cn(
                 "flex items-center gap-2 px-2 py-1.5 text-sm rounded transition-colors",
-                isActive 
-                  ? "bg-[#EBEBE9] font-medium text-[#37352F]" 
+                isActive
+                  ? "bg-[#EBEBE9] font-medium text-[#37352F]"
                   : "text-[#5F5E5B] hover:bg-[#EBEBE9] hover:text-[#37352F]"
               )}
             >
-              <item.icon 
-                size={16} 
-                className={cn(isActive ? "text-[#37352F]" : "text-[#9B9A97]")} 
+              <item.icon
+                size={16}
+                className={cn(isActive ? "text-[#37352F]" : "text-[#9B9A97]")}
               />
               <span>{item.label}</span>
             </Link>
@@ -87,7 +87,7 @@ export default function Sidebar() {
           <LogOut size={16} className="group-hover:text-red-600" />
           <span>Logout</span>
         </button>
-        
+
         {user && (
           <div className="flex items-center gap-2 p-2 mt-2 rounded bg-[#F7F6F3] border border-[#E9E9E7]">
             <div className="w-8 h-8 rounded-full bg-[#EBEBE9] flex items-center justify-center shrink-0">
