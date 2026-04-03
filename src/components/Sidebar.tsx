@@ -32,20 +32,22 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-[#FBFBFA] border-r border-[#E9E9E7] flex flex-col transition-all duration-200">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-background flex flex-col transition-all duration-200">
       {/* Header / Workspace Info */}
-      <div className="p-4 flex items-center justify-between group">
-        <div className="flex items-center gap-2 overflow-hidden">
-          <div className="w-8 h-8 rounded-md bg-[#37352F] flex items-center justify-center text-white shrink-0 font-bold text-lg">
+      <div className="p-6 flex items-center justify-between group">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-8 h-8 rounded-lg bg-surface-high flex items-center justify-center text-white shrink-0 font-bold text-lg border border-border-notion">
             C
           </div>
-          <a href="/" className="font-semibold text-sm truncate text-[#37352F]">CareerAI Builder</a>
+          <Link href="/" className="font-display font-semibold text-base tracking-tight truncate text-foreground hover:opacity-80 transition-opacity">
+            CareerAI
+          </Link>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 space-y-0.5 mt-4">
-        <div className="px-2 py-1 text-[10px] font-semibold text-[#9B9A97] uppercase tracking-wider mb-1">
+      <nav className="flex-1 px-4 space-y-1 mt-6">
+        <div className="px-3 py-2 text-[10px] font-bold text-muted-notion uppercase tracking-[0.2em] mb-2">
           Overview
         </div>
         {navItems.map((item) => {
@@ -55,15 +57,15 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2 px-2 py-1.5 text-sm rounded transition-colors",
+                "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all duration-200",
                 isActive
-                  ? "bg-[#EBEBE9] font-medium text-[#37352F]"
-                  : "text-[#5F5E5B] hover:bg-[#EBEBE9] hover:text-[#37352F]"
+                  ? "bg-surface-high font-medium text-foreground"
+                  : "text-muted-notion hover:bg-surface-low hover:text-foreground"
               )}
             >
               <item.icon
-                size={16}
-                className={cn(isActive ? "text-[#37352F]" : "text-[#9B9A97]")}
+                size={18}
+                className={cn(isActive ? "text-foreground" : "text-muted-notion")}
               />
               <span>{item.label}</span>
             </Link>
@@ -72,30 +74,30 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Profile/Settings */}
-      <div className="p-2 border-t border-[#E9E9E7] space-y-0.5">
+      <div className="p-4 space-y-1">
         <Link
           href="/dashboard/settings"
-          className="flex items-center gap-2 px-2 py-1.5 text-sm rounded text-[#5F5E5B] hover:bg-[#EBEBE9] hover:text-[#37352F] transition-colors"
+          className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg text-muted-notion hover:bg-surface-low hover:text-foreground transition-all"
         >
-          <Settings size={16} />
+          <Settings size={18} />
           <span>Settings</span>
         </Link>
         <button
           onClick={logout}
-          className="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded text-[#5F5E5B] hover:bg-red-50 hover:text-red-600 transition-colors group"
+          className="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg text-muted-notion hover:bg-red-950/30 hover:text-red-400 transition-all font-medium group"
         >
-          <LogOut size={16} className="group-hover:text-red-600" />
+          <LogOut size={18} className="group-hover:text-red-400" />
           <span>Logout</span>
         </button>
 
         {user && (
-          <div className="flex items-center gap-2 p-2 mt-2 rounded bg-[#F7F6F3] border border-[#E9E9E7]">
-            <div className="w-8 h-8 rounded-full bg-[#EBEBE9] flex items-center justify-center shrink-0">
-              <UserIcon size={14} className="text-[#9B9A97]" />
+          <div className="flex items-center gap-3 p-3 mt-4 rounded-xl bg-surface-low border border-border-notion">
+            <div className="w-9 h-9 rounded-full bg-surface-high flex items-center justify-center shrink-0 border border-border-notion">
+              <UserIcon size={16} className="text-foreground" />
             </div>
             <div className="overflow-hidden">
-              <p className="text-[10px] font-semibold truncate text-[#37352F]">{user.email.split('@')[0]}</p>
-              <p className="text-[9px] text-[#9B9A97] truncate">{user.email}</p>
+              <p className="text-xs font-bold truncate text-foreground">{user.email.split('@')[0]}</p>
+              <p className="text-[10px] text-muted-notion truncate">{user.email}</p>
             </div>
           </div>
         )}

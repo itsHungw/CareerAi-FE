@@ -28,10 +28,10 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <main className="flex-1 ml-64 bg-background min-h-screen border-l border-border-notion">
-        <div className="max-w-5xl mx-auto px-8 py-12">
+      <main className="flex-1 ml-64 bg-surface-low min-h-screen transition-all duration-300">
+        <div className="max-w-6xl mx-auto px-10 py-16">
           {children}
         </div>
       </main>

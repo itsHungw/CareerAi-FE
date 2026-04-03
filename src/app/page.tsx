@@ -13,24 +13,24 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#37352F] font-sans selection:bg-[#FDECC8]">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-surface-high">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full border-b border-[#E9E9E7] bg-white/80 backdrop-blur-md z-50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-[#37352F] flex items-center justify-center text-white shrink-0 font-bold text-lg">
+      <nav className="fixed top-0 w-full border-b border-border-notion bg-background/60 backdrop-blur-xl z-50">
+        <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-surface-high flex items-center justify-center text-white shrink-0 font-bold text-lg border border-border-notion shadow-inner">
               C
             </div>
-            <span className="font-bold text-lg tracking-tight">CareerAI</span>
+            <span className="font-display font-bold text-xl tracking-tight text-foreground">CareerAI</span>
           </div>
           
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="text-sm font-medium hover:text-[#0B6E99] transition-colors">
+          <div className="flex items-center gap-8">
+            <Link href="/login" className="text-sm font-medium text-muted-notion hover:text-foreground transition-colors">
               Log in
             </Link>
             <Link 
               href="/register" 
-              className="px-4 py-2 bg-[#37352F] text-white rounded-md text-sm font-medium hover:bg-[#4A4842] transition-all shadow-sm"
+              className="px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-bold hover:opacity-90 transition-all shadow-lg active:scale-95"
             >
               Get Started
             </Link>
@@ -38,130 +38,122 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <main className="pt-32">
+      <main className="pt-40">
         {/* Hero Section */}
-        <section className="max-w-5xl mx-auto px-6 text-center pb-20">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F1F1EF] text-[#9B9A97] text-xs font-semibold mb-8 animate-fade-in">
-            <Sparkles size={12} className="text-[#D9730D]" />
-            <span>AI-Powered Career Intelligence</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 leading-[1.1] text-[#37352F]">
-            Stop guessing your career path. <br />
-            <span className="text-[#9B9A97]">Start building it with AI.</span>
-          </h1>
-          
-          <p className="text-xl text-[#6B6B6B] max-w-2xl mx-auto mb-10 leading-relaxed">
-            The intelligent platform for modern professionals. Parse CVs, generate tailored roadmaps, and master interviews with your personal AI coach.
-          </p>
+        <section className="max-w-6xl mx-auto px-8 grid lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center pb-32">
+          <div className="space-y-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-low border border-border-notion text-muted-notion text-xs font-bold tracking-[0.15em] uppercase">
+              <Sparkles size={14} className="text-primary" />
+              <span>AI-Powered Career Intelligence</span>
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tight leading-[0.95] text-foreground">
+              Stop guessing. <br />
+              <span className="text-primary/40">Start building.</span>
+            </h1>
+            
+            <p className="text-xl text-muted-notion max-w-xl leading-relaxed font-medium">
+              The editorial-grade platform for professionals. Parse CVs, generate tailored roadmaps, and master interviews with your personal AI curator.
+            </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="/register" 
-              className="w-full sm:w-auto px-8 py-4 bg-[#37352F] text-white rounded-lg text-lg font-semibold hover:bg-[#4A4842] transition-all flex items-center justify-center gap-2 group shadow-lg"
-            >
-              Build my career now
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              href="/login" 
-              className="w-full sm:w-auto px-8 py-4 bg-white border border-[#E9E9E7] rounded-lg text-lg font-semibold hover:bg-[#F7F6F3] transition-all"
-            >
-              View demo
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
+              <Link 
+                href="/register" 
+                className="w-full sm:w-auto px-10 py-5 bg-foreground text-background rounded-xl text-lg font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 group shadow-2xl"
+              >
+                Build my career now
+                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link 
+                href="/login" 
+                className="w-full sm:w-auto px-10 py-5 bg-surface-low border border-border-notion rounded-xl text-lg font-bold text-foreground hover:bg-surface-medium transition-all"
+              >
+                View demo
+              </Link>
+            </div>
+          </div>
+
+          <div className="hidden lg:block relative p-2 aspect-square rounded-[2rem] bg-gradient-to-br from-surface-medium to-background border border-border-notion overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+              <div className="flex flex-col h-full bg-surface-low/50 backdrop-blur-sm p-8 space-y-6">
+                <div className="h-6 w-32 bg-surface-high rounded-full opacity-50"></div>
+                <div className="space-y-3">
+                  <div className="h-4 w-full bg-surface-high rounded-full opacity-30"></div>
+                  <div className="h-4 w-4/5 bg-surface-high rounded-full opacity-30"></div>
+                  <div className="h-4 w-2/3 bg-surface-high rounded-full opacity-30"></div>
+                </div>
+                <div className="mt-auto grid grid-cols-2 gap-4">
+                  <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
+                    <Target className="text-primary opacity-40" />
+                  </div>
+                  <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
+                    <Cpu className="text-primary opacity-40" />
+                  </div>
+                </div>
+              </div>
           </div>
         </section>
 
-        {/* Feature Grid */}
-        <section className="bg-[#F7F6F3] py-24 border-y border-[#E9E9E7]">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="grid md:grid-cols-3 gap-12">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-white border border-[#E9E9E7] flex items-center justify-center shadow-sm">
-                  <Cpu className="text-[#37352F]" />
+        {/* Feature Grid - Asymmetric Editorial Style */}
+        <section className="bg-surface-low py-32 border-y border-border-notion">
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+              <div className="space-y-6">
+                <div className="w-14 h-14 rounded-2xl bg-surface-high border border-border-notion flex items-center justify-center shadow-lg">
+                  <Cpu className="text-primary" size={28} />
                 </div>
-                <h3 className="text-xl font-bold">AI CV Analysis</h3>
-                <p className="text-[#5F5E5B] leading-relaxed">
-                  Upload your CV and let our AI extract skills, projects, and potential career pivots in seconds.
+                <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">AI CV Analysis</h3>
+                <p className="text-muted-notion leading-relaxed font-medium">
+                  Upload your CV and let our curator extract skills, projects, and potential career pivots with high-fidelity accuracy.
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-white border border-[#E9E9E7] flex items-center justify-center shadow-sm">
-                  <Target className="text-[#37352F]" />
+              <div className="space-y-6 lg:mt-16">
+                <div className="w-14 h-14 rounded-2xl bg-surface-high border border-border-notion flex items-center justify-center shadow-lg">
+                  <Target className="text-primary" size={28} />
                 </div>
-                <h3 className="text-xl font-bold">Direct Roadmaps</h3>
-                <p className="text-[#5F5E5B] leading-relaxed">
-                  Get a step-by-step learning path tailored to your dream job, including resources and projects.
+                <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">Direct Roadmaps</h3>
+                <p className="text-muted-notion leading-relaxed font-medium">
+                  Receive a step-by-step learning path tailored to your specific goals. Every step is curated for maximum efficiency.
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-white border border-[#E9E9E7] flex items-center justify-center shadow-sm">
-                  <Zap className="text-[#37352F]" />
+              <div className="space-y-6 lg:mt-32">
+                <div className="w-14 h-14 rounded-2xl bg-surface-high border border-border-notion flex items-center justify-center shadow-lg">
+                  <Zap className="text-primary" size={28} />
                 </div>
-                <h3 className="text-xl font-bold">Interview Mastery</h3>
-                <p className="text-[#5F5E5B] leading-relaxed">
-                  Practice with an AI that knows your specific career goals and provides real-time feedback.
+                <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">Interview Mastery</h3>
+                <p className="text-muted-notion leading-relaxed font-medium">
+                  Practice with an intelligent coach that adapts to your career goals and provides immediate, actionable feedback.
                 </p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* Trust Section */}
-        <section className="py-24 max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-12">Designed for the next generation of talent.</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {[
-              "Minimalist Interface",
-              "Privacy First",
-              "No Gradients",
-              "Real-time Analysis",
-              "Export to PDF",
-              "Dark Mode Ready"
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-2 justify-center text-[#5F5E5B] font-medium">
-                <CheckCircle2 size={16} className="text-[#448361]" />
-                <span>{item}</span>
-              </div>
-            ))}
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-[#E9E9E7] py-12">
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-[#37352F] flex items-center justify-center text-white font-bold text-xs">
+        <footer className="py-20 border-t border-border-notion">
+          <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-12">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded bg-surface-high flex items-center justify-center text-white font-bold text-xs border border-border-notion">
                 C
               </div>
-              <span className="font-bold text-sm">CareerAI Builder</span>
+              <span className="font-display font-bold text-lg tracking-tight text-foreground">CareerAI Builder</span>
             </div>
             
-            <div className="flex gap-8 text-sm text-[#9B9A97]">
-              <Link href="#" className="hover:text-[#37352F]">Twitter</Link>
-              <Link href="#" className="hover:text-[#37352F]">Github</Link>
-              <Link href="#" className="hover:text-[#37352F]">Terms</Link>
-              <Link href="#" className="hover:text-[#37352F]">Privacy</Link>
+            <div className="flex gap-10 text-sm font-bold text-muted-notion uppercase tracking-[0.1em]">
+              <Link href="#" className="hover:text-foreground transition-colors">Twitter</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Github</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
             </div>
             
-            <p className="text-sm text-[#9B9A97]">
-              © {new Date().getFullYear()} CareerAI. All rights reserved.
+            <p className="text-sm text-muted-notion font-medium">
+              © {new Date().getFullYear()} CareerAI.
             </p>
           </div>
         </footer>
       </main>
-
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 }
