@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { ApiClientError } from '@/lib/axios';
-import { AlertCircle, Loader2, Mail, Lock } from 'lucide-react';
+import { Loader2, Mail, Lock } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function RegisterPage() {
   const { register } = useAuth();
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
   // Local state for registration
@@ -18,21 +18,20 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     // Basic validation
     if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields.');
+      toast.error('Please fill in all fields.');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      toast.error('Passwords do not match.');
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      toast.error('Password must be at least 6 characters.');
       return;
     }
 
@@ -40,7 +39,7 @@ export default function RegisterPage() {
     try {
       await register(email, password);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Registration failed. Email might already exist.');
+      toast.error(err instanceof ApiClientError ? err.message : 'Registration failed. Email might already exist.');
     } finally {
       setIsLoading(false);
     }
@@ -105,13 +104,6 @@ export default function RegisterPage() {
             {isLoading ? <Loader2 size={18} className="animate-spin" /> : "Sign up"}
           </button>
         </form>
-
-        {error && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-950/20 border border-red-900/30 text-red-400 text-xs font-medium animate-in fade-in slide-in-from-top-2">
-            <AlertCircle size={14} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
 
         <p className="text-center text-xs text-muted-notion font-bold uppercase tracking-wider">
           Already have an account?{' '}

@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/context/AuthContext';
 import { ApiClientError } from '@/lib/axios';
-import { AlertCircle, Loader2, Mail, Lock } from 'lucide-react';
+import { Loader2, Mail, Lock } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function LoginPage() {
   const { loginWithGoogle, login } = useAuth();
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
   // Local state for email login
@@ -18,16 +18,15 @@ export default function LoginPage() {
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
-      setError('Google did not return a valid credential.');
+      toast.error('Google did not return a valid credential.');
       return;
     }
 
     setIsLoading(true);
-    setError(null);
     try {
       await loginWithGoogle(credentialResponse.credential);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Failed to login with Google.');
+      toast.error(err instanceof ApiClientError ? err.message : 'Failed to login with Google.');
     } finally {
       setIsLoading(false);
     }
@@ -36,16 +35,15 @@ export default function LoginPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Please enter both email and password.');
+      toast.error('Please enter both email and password.');
       return;
     }
 
     setIsLoading(true);
-    setError(null);
     try {
       await login(email, password);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Invalid email or password.');
+      toast.error(err instanceof ApiClientError ? err.message : 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
@@ -109,20 +107,13 @@ export default function LoginPage() {
         <div className="flex justify-center scale-105">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setError('Google login failed.')}
+            onError={() => toast.error('Google login failed.')}
             useOneTap
             theme="filled_black"
             shape="pill"
             width="100%"
           />
         </div>
-
-        {error && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-950/20 border border-red-900/30 text-red-400 text-xs font-medium animate-in fade-in slide-in-from-top-2">
-            <AlertCircle size={14} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
 
         <p className="text-center text-xs text-muted-notion font-bold uppercase tracking-wider">
           Don&apos;t have an account?{' '}
