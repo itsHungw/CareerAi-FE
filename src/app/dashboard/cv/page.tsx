@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import api, { ApiClientError, ApiEnvelope } from '@/lib/axios';
 
 interface CVData {
@@ -38,9 +39,10 @@ export default function DashboardCvPage() {
         },
       });
       setResult(response.data.data);
+      // Optional: Redirect or notify to check roadmap
     } catch (err) {
       setResult(null);
-      setError(err instanceof ApiClientError ? err.message : 'Upload CV that bai.');
+      setError(err instanceof ApiClientError ? err.message : 'Upload CV thất bại.');
     } finally {
       setIsSubmitting(false);
     }
@@ -126,7 +128,12 @@ export default function DashboardCvPage() {
           <div className="space-y-4">
             <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold">Curator Insights</p>
             <div className="p-6 rounded-xl bg-surface-high border border-border-notion/50">
-              <p className="text-base leading-8 text-foreground/90 font-medium whitespace-pre-wrap">{result.parsedContent}</p>
+              <p className="text-base leading-8 text-foreground/90 font-medium whitespace-pre-wrap">{result.parsedContent || "Phân tích hoàn tất. Hệ thống đã trích xuất các kỹ năng trọng yếu và xây dựng lộ trình sự nghiệp tương ứng. Vui lòng kiểm tra mục 'Curate Roadmap' để xem chi tiết."}</p>
+            </div>
+            <div className="flex justify-end pt-4">
+               <Link href="/dashboard/roadmap" className="text-sm font-bold text-primary flex items-center gap-2 hover:gap-3 transition-all">
+                  View My Strategic Roadmap →
+               </Link>
             </div>
           </div>
         </div>

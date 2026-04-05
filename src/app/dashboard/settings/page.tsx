@@ -1,11 +1,9 @@
 "use client";
 
 import React from 'react';
-import { 
-  User, 
-  Shield, 
-  Bell, 
-  Moon, 
+import {
+  User,
+  Shield,
   LogOut,
   ChevronRight
 } from 'lucide-react';
@@ -29,7 +27,7 @@ export default function DashboardSettingsPage() {
       description: 'Configure your authentication protocols and access logs.',
       icon: Shield,
       items: [
-        { label: 'Password', value: '••••••••••••' },
+        { label: 'Password', value: '************' },
         { label: 'Two-Factor Auth', value: 'Deactivated' },
       ]
     }
@@ -58,7 +56,7 @@ export default function DashboardSettingsPage() {
 
             <div className="grid gap-2">
               {section.items.map((item, i) => (
-                <button 
+                <button
                   key={i}
                   className="flex items-center justify-between p-6 rounded-2xl bg-surface-medium border border-border-notion hover:bg-surface-high transition-all group shadow-sm"
                 >

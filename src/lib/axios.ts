@@ -21,30 +21,94 @@ export class ApiClientError extends Error {
   }
 }
 
+interface QueuedRequest {
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+}
+
+// In-memory token storage
+let accessToken: string | null = null;
+
+export const setAccessToken = (token: string | null) => {
+  accessToken = token;
+};
+
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
+  withCredentials: true, // Send cookies with every request
 });
 
 api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('careerai_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
 
+let isRefreshing = false;
+let failedQueue: QueuedRequest[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ApiErrorPayload>) => {
+  async (error: AxiosError<ApiErrorPayload>) => {
+    const originalRequest = error.config;
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message || 'Request failed';
 
-    if (status === 401 && typeof window !== 'undefined' && window.location.pathname !== '/login') {
-      localStorage.removeItem('careerai_token');
-      localStorage.removeItem('careerai_user');
-      window.location.href = '/login';
+    // If 401 and not a refresh request itself
+    if (status === 401 && originalRequest && !originalRequest.url?.includes('/auth/refresh')) {
+      
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+            }
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      isRefreshing = true;
+
+      try {
+        // Backend reads refreshToken from HttpOnly cookie automatically
+        const { data } = await axios.post<ApiEnvelope<string>>(`${api.defaults.baseURL}/auth/refresh`, {}, { withCredentials: true });
+        const newAccessToken = data.data;
+
+        setAccessToken(newAccessToken);
+        processQueue(null, newAccessToken);
+        isRefreshing = false;
+
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        isRefreshing = false;
+        
+        // Global logout if refresh fails
+        setAccessToken(null);
+        if (typeof window !== 'undefined') {
+           localStorage.removeItem('careerai_user'); // Still keep user profile in LS or remove it?
+           window.location.href = '/login';
+        }
+        return Promise.reject(refreshError);
+      }
     }
 
     return Promise.reject(new ApiClientError(message, status));

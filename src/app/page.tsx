@@ -2,16 +2,18 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
-  ArrowRight, 
-  Sparkles, 
-  Target, 
-  Cpu, 
+import {
+  ArrowRight,
+  Sparkles,
+  Target,
+  Cpu,
   Zap,
-  CheckCircle2
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LandingPage() {
+  const { user, loading } = useAuth();
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-surface-high">
       {/* Navigation */}
@@ -23,18 +25,30 @@ export default function LandingPage() {
             </div>
             <span className="font-display font-bold text-xl tracking-tight text-foreground">CareerAI</span>
           </div>
-          
+
           <div className="flex items-center gap-8">
-            <Link href="/login" className="text-sm font-medium text-muted-notion hover:text-foreground transition-colors">
-              Log in
-            </Link>
-            <Link 
-              href="/register" 
-              className="px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-bold hover:opacity-90 transition-all shadow-lg active:scale-95"
-            >
-              Get Started
-            </Link>
+            {!loading && user ? (
+              <Link 
+                href="/dashboard" 
+                className="px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-bold hover:opacity-90 transition-all shadow-lg active:scale-95"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium text-muted-notion hover:text-foreground transition-colors">
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-bold hover:opacity-90 transition-all shadow-lg active:scale-95"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
+
         </div>
       </nav>
 
@@ -46,51 +60,63 @@ export default function LandingPage() {
               <Sparkles size={14} className="text-primary" />
               <span>AI-Powered Career Intelligence</span>
             </div>
-            
+
             <h1 className="text-6xl md:text-8xl font-display font-extrabold tracking-tight leading-[0.95] text-foreground">
               Stop guessing. <br />
               <span className="text-primary/40">Start building.</span>
             </h1>
-            
+
             <p className="text-xl text-muted-notion max-w-xl leading-relaxed font-medium">
               The editorial-grade platform for professionals. Parse CVs, generate tailored roadmaps, and master interviews with your personal AI curator.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
-              <Link 
-                href="/register" 
-                className="w-full sm:w-auto px-10 py-5 bg-foreground text-background rounded-xl text-lg font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 group shadow-2xl"
-              >
-                Build my career now
-                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link 
-                href="/login" 
-                className="w-full sm:w-auto px-10 py-5 bg-surface-low border border-border-notion rounded-xl text-lg font-bold text-foreground hover:bg-surface-medium transition-all"
-              >
-                View demo
-              </Link>
+              {!loading && user ? (
+                <Link
+                  href="/dashboard"
+                  className="w-full sm:w-auto px-10 py-5 bg-foreground text-background rounded-xl text-lg font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 group shadow-2xl"
+                >
+                  Go to Dashboard
+                  <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/register"
+                    className="w-full sm:w-auto px-10 py-5 bg-foreground text-background rounded-xl text-lg font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 group shadow-2xl"
+                  >
+                    Build my career now
+                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="w-full sm:w-auto px-10 py-5 bg-surface-low border border-border-notion rounded-xl text-lg font-bold text-foreground hover:bg-surface-medium transition-all"
+                  >
+                    View demo
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
           <div className="hidden lg:block relative p-2 aspect-square rounded-[2rem] bg-gradient-to-br from-surface-medium to-background border border-border-notion overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-              <div className="flex flex-col h-full bg-surface-low/50 backdrop-blur-sm p-8 space-y-6">
-                <div className="h-6 w-32 bg-surface-high rounded-full opacity-50"></div>
-                <div className="space-y-3">
-                  <div className="h-4 w-full bg-surface-high rounded-full opacity-30"></div>
-                  <div className="h-4 w-4/5 bg-surface-high rounded-full opacity-30"></div>
-                  <div className="h-4 w-2/3 bg-surface-high rounded-full opacity-30"></div>
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+            <div className="flex flex-col h-full bg-surface-low/50 backdrop-blur-sm p-8 space-y-6">
+              <div className="h-6 w-32 bg-surface-high rounded-full opacity-50"></div>
+              <div className="space-y-3">
+                <div className="h-4 w-full bg-surface-high rounded-full opacity-30"></div>
+                <div className="h-4 w-4/5 bg-surface-high rounded-full opacity-30"></div>
+                <div className="h-4 w-2/3 bg-surface-high rounded-full opacity-30"></div>
+              </div>
+              <div className="mt-auto grid grid-cols-2 gap-4">
+                <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
+                  <Target className="text-primary opacity-40" />
                 </div>
-                <div className="mt-auto grid grid-cols-2 gap-4">
-                  <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
-                    <Target className="text-primary opacity-40" />
-                  </div>
-                  <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
-                    <Cpu className="text-primary opacity-40" />
-                  </div>
+                <div className="h-24 bg-surface-high rounded-2xl border border-border-notion/50 flex items-center justify-center">
+                  <Cpu className="text-primary opacity-40" />
                 </div>
               </div>
+            </div>
           </div>
         </section>
 
@@ -140,14 +166,14 @@ export default function LandingPage() {
               </div>
               <span className="font-display font-bold text-lg tracking-tight text-foreground">CareerAI Builder</span>
             </div>
-            
+
             <div className="flex gap-10 text-sm font-bold text-muted-notion uppercase tracking-[0.1em]">
               <Link href="#" className="hover:text-foreground transition-colors">Twitter</Link>
               <Link href="#" className="hover:text-foreground transition-colors">Github</Link>
               <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
               <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
             </div>
-            
+
             <p className="text-sm text-muted-notion font-medium">
               © {new Date().getFullYear()} CareerAI.
             </p>

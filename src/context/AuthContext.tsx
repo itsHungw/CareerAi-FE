@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import api, { ApiEnvelope } from '@/lib/axios';
+import api, { ApiEnvelope, setAccessToken } from '@/lib/axios';
 
 interface User {
   id: string;
@@ -11,7 +11,8 @@ interface User {
 }
 
 interface AuthPayload {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: User;
 }
 
@@ -31,17 +32,12 @@ function getStoredUser(): User | null {
     return null;
   }
 
-  const token = localStorage.getItem('careerai_token');
   const storedUser = localStorage.getItem('careerai_user');
-
-  if (!token || !storedUser) {
-    return null;
-  }
+  if (!storedUser) return null;
 
   try {
     return JSON.parse(storedUser) as User;
   } catch {
-    localStorage.removeItem('careerai_token');
     localStorage.removeItem('careerai_user');
     return null;
   }
@@ -49,23 +45,53 @@ function getStoredUser(): User | null {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => getStoredUser());
-  const loading = false;
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
+  // Handle initial session check
+  useEffect(() => {
+    const initAuth = async () => {
+      const publicPaths = ['/', '/login', '/register'];
+      
+      try {
+        // Attempt silent refresh on app load if we think we might have a session
+        // (e.g., if there's a user profile in LS)
+        if (getStoredUser()) {
+          const response = await api.post<ApiEnvelope<string>>('/auth/refresh');
+          setAccessToken(response.data.data);
+          // If successful, user is already set from state initialization
+        }
+      } catch {
+        // If refresh fails, clear user if they were set from LS
+        setUser(null);
+        localStorage.removeItem('careerai_user');
+        
+        if (!publicPaths.includes(pathname)) {
+          router.push('/login');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
+  }, [pathname, router]);
+
+  // Sync route protection
   useEffect(() => {
     const publicPaths = ['/', '/login', '/register'];
-    if (!user && !publicPaths.includes(pathname)) {
+    if (!loading && !user && !publicPaths.includes(pathname)) {
       router.push('/login');
     }
-  }, [user, pathname, router]);
+  }, [user, pathname, router, loading]);
 
   const loginWithGoogle = async (idToken: string) => {
     try {
       const response = await api.post<ApiEnvelope<AuthPayload>>('/auth/google', { idToken });
-      const { token, user: userData } = response.data.data;
+      const { accessToken, user: userData } = response.data.data;
 
-      localStorage.setItem('careerai_token', token);
+      setAccessToken(accessToken);
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
@@ -79,9 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post<ApiEnvelope<AuthPayload>>('/auth/login', { email, password });
-      const { token, user: userData } = response.data.data;
+      const { accessToken, user: userData } = response.data.data;
 
-      localStorage.setItem('careerai_token', token);
+      setAccessToken(accessToken);
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
@@ -95,9 +121,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (email: string, password: string) => {
     try {
       const response = await api.post<ApiEnvelope<AuthPayload>>('/auth/register', { email, password });
-      const { token, user: userData } = response.data.data;
+      const { accessToken, user: userData } = response.data.data;
 
-      localStorage.setItem('careerai_token', token);
+      setAccessToken(accessToken);
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
@@ -108,11 +134,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('careerai_token');
-    localStorage.removeItem('careerai_user');
-    setUser(null);
-    router.push('/');
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (err) {
+      console.error('Logout failed on server', err);
+    } finally {
+      setAccessToken(null);
+      localStorage.removeItem('careerai_user');
+      setUser(null);
+      router.push('/');
+    }
   };
 
   return (
@@ -129,3 +161,4 @@ export function useAuth() {
   }
   return context;
 }
+
