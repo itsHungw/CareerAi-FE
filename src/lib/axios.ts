@@ -66,8 +66,10 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message || 'Request failed';
 
-    // If 401 and not a refresh request itself
-    if (status === 401 && originalRequest && !originalRequest.url?.includes('/auth/refresh')) {
+    const isAuthEndpoint = !!originalRequest?.url?.includes('/auth/');
+
+    // If 401 and not a refresh request itself and not a public auth endpoint
+    if (status === 401 && originalRequest && !originalRequest.url?.includes('/auth/refresh') && !isAuthEndpoint) {
       
       if (isRefreshing) {
         return new Promise((resolve, reject) => {

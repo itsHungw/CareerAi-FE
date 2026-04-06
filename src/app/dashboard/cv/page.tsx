@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { ChevronDown, ChevronUp, FileText, CheckCircle } from 'lucide-react';
 import api, { ApiClientError, ApiEnvelope } from '@/lib/axios';
 
 interface CVData {
   id: string;
   fileName: string;
   fileUrl: string;
-  parsedContent: string;
+  review: string;
 }
 
 export default function DashboardCvPage() {
@@ -17,6 +18,7 @@ export default function DashboardCvPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isReviewExpanded, setIsReviewExpanded] = useState(true);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -126,13 +128,28 @@ export default function DashboardCvPage() {
             </button>
           </div>
           <div className="space-y-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold">Curator Insights</p>
-            <div className="p-6 rounded-xl bg-surface-high border border-border-notion/50">
-              <p className="text-base leading-8 text-foreground/90 font-medium whitespace-pre-wrap">{result.parsedContent || "Phân tích hoàn tất. Hệ thống đã trích xuất các kỹ năng trọng yếu và xây dựng lộ trình sự nghiệp tương ứng. Vui lòng kiểm tra mục 'Curate Roadmap' để xem chi tiết."}</p>
-            </div>
+            <button 
+              onClick={() => setIsReviewExpanded(!isReviewExpanded)}
+              className="w-full flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold">AI Review & Career Critique</p>
+                <div className="h-px w-8 bg-primary/30 group-hover:w-12 transition-all"></div>
+              </div>
+              {isReviewExpanded ? <ChevronUp size={18} className="text-muted-notion" /> : <ChevronDown size={18} className="text-muted-notion" />}
+            </button>
+            
+            {isReviewExpanded && (
+              <div className="p-8 rounded-2xl bg-surface-high border border-border-notion/50 shadow-inner animate-in fade-in zoom-in-95 duration-300">
+                <p className="text-base leading-8 text-foreground/90 font-medium whitespace-pre-wrap">
+                  {result.review || "Phân tích hoàn tất. Hệ thống đã trích xuất các kỹ năng trọng yếu và xây dựng lộ trình sự nghiệp tương ứng. Vui lòng kiểm tra mục 'Curate Roadmap' để xem chi tiết."}
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end pt-4">
                <Link href="/dashboard/roadmap" className="text-sm font-bold text-primary flex items-center gap-2 hover:gap-3 transition-all">
-                  View My Strategic Roadmap →
+                  Next Step: View Strategic Roadmap →
                </Link>
             </div>
           </div>

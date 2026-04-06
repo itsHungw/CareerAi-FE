@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import api, { ApiEnvelope, setAccessToken } from '@/lib/axios';
 
@@ -48,9 +48,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const hasInitialized = useRef(false);
 
   // Handle initial session check
   useEffect(() => {
+    if (hasInitialized.current) {
+      return;
+    }
+    hasInitialized.current = true;
+
     const initAuth = async () => {
       const publicPaths = ['/', '/login', '/register'];
       
@@ -68,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('careerai_user');
         
         if (!publicPaths.includes(pathname)) {
-          router.push('/login');
+          router.replace('/login');
         }
       } finally {
         setLoading(false);
@@ -82,7 +88,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const publicPaths = ['/', '/login', '/register'];
     if (!loading && !user && !publicPaths.includes(pathname)) {
-      router.push('/login');
+      router.replace('/login');
+      return;
+    }
+
+    if (!loading && user && (pathname === '/login' || pathname === '/register')) {
+      router.replace('/dashboard');
     }
   }, [user, pathname, router, loading]);
 
@@ -95,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
-      router.push('/dashboard');
+      router.replace('/dashboard');
     } catch (error) {
       console.error('Google Login Error:', error);
       throw error;
@@ -111,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
-      router.push('/dashboard');
+      router.replace('/dashboard');
     } catch (error) {
       console.error('Login Error:', error);
       throw error;
@@ -127,7 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('careerai_user', JSON.stringify(userData));
       setUser(userData);
 
-      router.push('/dashboard');
+      router.replace('/dashboard');
     } catch (error) {
       console.error('Register Error:', error);
       throw error;
@@ -143,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAccessToken(null);
       localStorage.removeItem('careerai_user');
       setUser(null);
-      router.push('/');
+      router.replace('/');
     }
   };
 
@@ -161,4 +172,3 @@ export function useAuth() {
   }
   return context;
 }
-
