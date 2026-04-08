@@ -171,6 +171,9 @@ export default function DashboardRoadmapPage() {
         <div className="p-12 rounded-[2rem] bg-surface-medium border border-border-notion text-center flex flex-col items-center gap-6">
           <MapPin size={48} className="text-muted-notion" />
           <p className="text-xl font-bold text-foreground">No active roadmap found.</p>
+          <p className="max-w-md text-sm text-muted-notion font-medium leading-relaxed">
+            Upload a CV first, then generate a roadmap from the analyzed skills and summary stored in the backend.
+          </p>
           <Link href="/dashboard/cv" className="px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold shadow-xl hover:opacity-90 transition-all">
             Upload CV First
           </Link>

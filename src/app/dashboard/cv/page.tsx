@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ChevronUp, FileText, CheckCircle } from 'lucide-react';
+import { Briefcase, CheckCircle, ChevronDown, ChevronUp, Route as RouteIcon } from 'lucide-react';
 import api, { ApiClientError, ApiEnvelope } from '@/lib/axios';
 
 interface CVData {
@@ -24,7 +24,7 @@ export default function DashboardCvPage() {
     event.preventDefault();
 
     if (!file) {
-      setError('Hay chon mot file PDF.');
+      setError('Please choose a PDF file before uploading.');
       return;
     }
 
@@ -41,10 +41,9 @@ export default function DashboardCvPage() {
         },
       });
       setResult(response.data.data);
-      // Optional: Redirect or notify to check roadmap
     } catch (err) {
       setResult(null);
-      setError(err instanceof ApiClientError ? err.message : 'Upload CV thất bại.');
+      setError(err instanceof ApiClientError ? err.message : 'CV upload failed.');
     } finally {
       setIsSubmitting(false);
     }
@@ -59,7 +58,11 @@ export default function DashboardCvPage() {
     setError(null);
 
     try {
-      const response = await api.get<Blob>(result.fileUrl, {
+      const downloadUrl = result.fileUrl.startsWith('/api/')
+        ? result.fileUrl.replace('/api', '')
+        : result.fileUrl;
+
+      const response = await api.get<Blob>(downloadUrl, {
         responseType: 'blob',
       });
       const url = window.URL.createObjectURL(response.data);
@@ -71,7 +74,7 @@ export default function DashboardCvPage() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Download CV that bai.');
+      setError(err instanceof ApiClientError ? err.message : 'Failed to download the uploaded CV.');
     } finally {
       setIsDownloading(false);
     }
@@ -83,11 +86,20 @@ export default function DashboardCvPage() {
         <p className="text-xs uppercase tracking-[0.25em] text-muted-notion font-bold">Curator / CV</p>
         <h1 className="text-5xl font-display font-extrabold tracking-tight text-foreground">CV Upload</h1>
         <p className="max-w-2xl text-base leading-relaxed text-muted-notion font-medium">
-          Upload your professional resume to begin the AI curation process. We extraction skills, experience, and potential growth paths.
+          Upload your latest resume to trigger CV analysis, skill extraction, roadmap generation, and job matching from the rest of the dashboard.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-border-notion bg-surface-medium p-8 shadow-2xl transition-all hover:bg-surface-medium/80">
+        <div className="rounded-2xl border border-border-notion/60 bg-surface-high p-5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-notion mb-2">Upload Notes</p>
+          <ul className="space-y-2 text-sm text-muted-notion font-medium leading-relaxed">
+            <li>Use a readable PDF resume.</li>
+            <li>The backend will extract text, call the AI analysis flow, and store the result for later matching.</li>
+            <li>After upload, continue to Job Matches or Roadmap to verify the rest of the system.</li>
+          </ul>
+        </div>
+
         <div className="relative group">
           <input
             type="file"
@@ -127,8 +139,22 @@ export default function DashboardCvPage() {
               {isDownloading ? 'Downloading...' : 'Download PDF'}
             </button>
           </div>
+
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle size={18} className="mt-0.5 text-primary" />
+              <div className="space-y-2">
+                <p className="text-sm font-bold text-foreground">CV analysis completed.</p>
+                <p className="text-sm text-muted-notion font-medium leading-relaxed">
+                  Your upload is stored successfully. Use the actions below to verify roadmap generation and job matching from the same analyzed CV.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-4">
-            <button 
+            <button
+              type="button"
               onClick={() => setIsReviewExpanded(!isReviewExpanded)}
               className="w-full flex items-center justify-between group"
             >
@@ -138,19 +164,36 @@ export default function DashboardCvPage() {
               </div>
               {isReviewExpanded ? <ChevronUp size={18} className="text-muted-notion" /> : <ChevronDown size={18} className="text-muted-notion" />}
             </button>
-            
+
             {isReviewExpanded && (
               <div className="p-8 rounded-2xl bg-surface-high border border-border-notion/50 shadow-inner animate-in fade-in zoom-in-95 duration-300">
                 <p className="text-base leading-8 text-foreground/90 font-medium whitespace-pre-wrap">
-                  {result.review || "Phân tích hoàn tất. Hệ thống đã trích xuất các kỹ năng trọng yếu và xây dựng lộ trình sự nghiệp tương ứng. Vui lòng kiểm tra mục 'Curate Roadmap' để xem chi tiết."}
+                  {result.review || 'Analysis completed. The system extracted core skills and generated a baseline review for the next steps in the dashboard.'}
                 </p>
               </div>
             )}
 
-            <div className="flex justify-end pt-4">
-               <Link href="/dashboard/roadmap" className="text-sm font-bold text-primary flex items-center gap-2 hover:gap-3 transition-all">
-                  Next Step: View Strategic Roadmap →
-               </Link>
+            <div className="grid gap-4 pt-4 md:grid-cols-2">
+              <Link
+                href="/dashboard/roadmap"
+                className="flex items-center justify-between rounded-2xl border border-border-notion bg-surface-high px-5 py-4 text-sm font-bold text-foreground transition-all hover:border-primary/30 hover:bg-surface-medium"
+              >
+                <span className="flex items-center gap-3">
+                  <RouteIcon size={18} className="text-primary" />
+                  View Strategic Roadmap
+                </span>
+                <span className="text-primary">Open</span>
+              </Link>
+              <Link
+                href="/dashboard/jobs"
+                className="flex items-center justify-between rounded-2xl border border-border-notion bg-surface-high px-5 py-4 text-sm font-bold text-foreground transition-all hover:border-primary/30 hover:bg-surface-medium"
+              >
+                <span className="flex items-center gap-3">
+                  <Briefcase size={18} className="text-primary" />
+                  Check Job Matches
+                </span>
+                <span className="text-primary">Open</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -158,4 +201,3 @@ export default function DashboardCvPage() {
     </section>
   );
 }
-

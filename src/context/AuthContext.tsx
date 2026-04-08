@@ -33,7 +33,9 @@ function getStoredUser(): User | null {
   }
 
   const storedUser = localStorage.getItem('careerai_user');
-  if (!storedUser) return null;
+  if (!storedUser) {
+    return null;
+  }
 
   try {
     return JSON.parse(storedUser) as User;
@@ -44,13 +46,12 @@ function getStoredUser(): User | null {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => getStoredUser());
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const hasInitialized = useRef(false);
 
-  // Handle initial session check
   useEffect(() => {
     if (hasInitialized.current) {
       return;
@@ -59,20 +60,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const initAuth = async () => {
       const publicPaths = ['/', '/login', '/register'];
-      
+      const storedUser = getStoredUser();
+
+      if (storedUser) {
+        setUser(storedUser);
+      }
+
       try {
-        // Attempt silent refresh on app load if we think we might have a session
-        // (e.g., if there's a user profile in LS)
-        if (getStoredUser()) {
+        if (storedUser) {
           const response = await api.post<ApiEnvelope<string>>('/auth/refresh');
           setAccessToken(response.data.data);
-          // If successful, user is already set from state initialization
         }
       } catch {
-        // If refresh fails, clear user if they were set from LS
         setUser(null);
         localStorage.removeItem('careerai_user');
-        
+
         if (!publicPaths.includes(pathname)) {
           router.replace('/login');
         }
@@ -81,12 +83,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    initAuth();
+    void initAuth();
   }, [pathname, router]);
 
-  // Sync route protection
   useEffect(() => {
     const publicPaths = ['/', '/login', '/register'];
+
     if (!loading && !user && !publicPaths.includes(pathname)) {
       router.replace('/login');
       return;

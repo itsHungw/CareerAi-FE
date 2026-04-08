@@ -16,7 +16,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-surface-high">
-      {/* Navigation */}
       <nav className="fixed top-0 w-full border-b border-border-notion bg-background/60 backdrop-blur-xl z-50">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -28,8 +27,8 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-8">
             {!loading && user ? (
-              <Link 
-                href="/dashboard" 
+              <Link
+                href="/dashboard"
                 className="px-5 py-2.5 bg-foreground text-background rounded-lg text-sm font-bold hover:opacity-90 transition-all shadow-lg active:scale-95"
               >
                 Go to Dashboard
@@ -48,12 +47,10 @@ export default function LandingPage() {
               </>
             )}
           </div>
-
         </div>
       </nav>
 
       <main className="pt-40">
-        {/* Hero Section */}
         <section className="max-w-6xl mx-auto px-8 grid lg:grid-cols-[1.2fr_0.8fr] gap-16 items-center pb-32">
           <div className="space-y-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-low border border-border-notion text-muted-notion text-xs font-bold tracking-[0.15em] uppercase">
@@ -67,7 +64,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-xl text-muted-notion max-w-xl leading-relaxed font-medium">
-              The editorial-grade platform for professionals. Parse CVs, generate tailored roadmaps, and master interviews with your personal AI curator.
+              Upload a CV, generate a focused roadmap, and inspect job matches from one AI-assisted workflow.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
@@ -120,7 +117,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Feature Grid - Asymmetric Editorial Style */}
         <section className="bg-surface-low py-32 border-y border-border-notion">
           <div className="max-w-7xl mx-auto px-8">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
@@ -130,7 +126,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">AI CV Analysis</h3>
                 <p className="text-muted-notion leading-relaxed font-medium">
-                  Upload your CV and let our curator extract skills, projects, and potential career pivots with high-fidelity accuracy.
+                  Upload your CV and extract the skills, experience signals, and review that power the rest of the app.
                 </p>
               </div>
 
@@ -140,7 +136,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">Direct Roadmaps</h3>
                 <p className="text-muted-notion leading-relaxed font-medium">
-                  Receive a step-by-step learning path tailored to your specific goals. Every step is curated for maximum efficiency.
+                  Generate a step-by-step learning path from your latest CV and keep progress visible in the dashboard.
                 </p>
               </div>
 
@@ -148,16 +144,15 @@ export default function LandingPage() {
                 <div className="w-14 h-14 rounded-2xl bg-surface-high border border-border-notion flex items-center justify-center shadow-lg">
                   <Zap className="text-primary" size={28} />
                 </div>
-                <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">Interview Mastery</h3>
+                <h3 className="text-3xl font-display font-bold text-foreground tracking-tight">Job Matching</h3>
                 <p className="text-muted-notion leading-relaxed font-medium">
-                  Practice with an intelligent coach that adapts to your career goals and provides immediate, actionable feedback.
+                  Cross-reference analyzed skills against job data to validate matching output and ranking.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="py-20 border-t border-border-notion">
           <div className="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-12">
             <div className="flex items-center gap-3">
@@ -175,7 +170,7 @@ export default function LandingPage() {
             </div>
 
             <p className="text-sm text-muted-notion font-medium">
-              © {new Date().getFullYear()} CareerAI.
+              Copyright {new Date().getFullYear()} CareerAI.
             </p>
           </div>
         </footer>

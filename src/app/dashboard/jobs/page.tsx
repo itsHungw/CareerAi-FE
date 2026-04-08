@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import {
   Briefcase,
   MapPin,
@@ -73,7 +74,15 @@ export default function DashboardJobsPage() {
       {error && (
         <div className="p-8 rounded-[2rem] bg-red-500/10 border border-red-500/20 text-red-500 text-center font-bold">
           {error}
-          <p className="text-sm font-medium mt-2 opacity-70">Make sure you have uploaded a CV for precise recommendations.</p>
+          <p className="text-sm font-medium mt-2 opacity-70">Upload a CV first if you have not created an analyzed profile yet.</p>
+          <div className="mt-5">
+            <Link
+              href="/dashboard/cv"
+              className="inline-flex rounded-xl border border-red-500/20 px-4 py-2 text-sm font-bold text-red-400 transition-all hover:bg-red-500/10"
+            >
+              Go to CV Upload
+            </Link>
+          </div>
         </div>
       )}
 
