@@ -3,6 +3,7 @@
 import React from 'react';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { CVProvider } from "@/context/CVContext";
 import { usePathname } from 'next/navigation';
 import { Toaster } from "react-hot-toast";
 import Sidebar from "@/components/Sidebar";
@@ -14,19 +15,21 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
       <AuthProvider>
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#1c1c1c',
-              color: '#fff',
-              border: '1px solid #333',
-              borderRadius: '8px',
-              fontFamily: 'var(--font-inter)',
-            },
-          }}
-        />
-        <AppWrapper>{children}</AppWrapper>
+        <CVProvider>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#1c1c1c',
+                color: '#fff',
+                border: '1px solid #333',
+                borderRadius: '8px',
+                fontFamily: 'var(--font-inter)',
+              },
+            }}
+          />
+          <AppWrapper>{children}</AppWrapper>
+        </CVProvider>
       </AuthProvider>
     </GoogleOAuthProvider>
   );

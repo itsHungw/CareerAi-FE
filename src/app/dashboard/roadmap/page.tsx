@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 
 import api, { ApiClientError, ApiEnvelope } from '@/lib/axios';
+import { useCVContext } from '@/context/CVContext';
 
 interface RoadmapStep {
   id: string;
@@ -48,6 +49,9 @@ export default function DashboardRoadmapPage() {
   const [generating, setGenerating] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [targetTitle, setTargetTitle] = React.useState('');
+  const [showCVReview, setShowCVReview] = React.useState(false);
+
+  const { currentCv } = useCVContext();
 
   const loadRoadmap = React.useCallback(async () => {
     try {
@@ -152,6 +156,30 @@ export default function DashboardRoadmapPage() {
           </div>
         )}
       </section>
+
+      {/* Current CV Review Section */}
+      {currentCv && (
+        <section className="rounded-[2rem] bg-surface-medium border border-border-notion p-8 shadow-2xl space-y-4">
+          <button
+            onClick={() => setShowCVReview(!showCVReview)}
+            className="w-full flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3">
+              <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Current CV Context</p>
+              <div className="h-px flex-1 bg-primary/30 group-hover:bg-primary/50 transition-all"></div>
+            </div>
+            <div className="text-xs text-muted-notion">{currentCv.fileName}</div>
+          </button>
+
+          {showCVReview && (
+            <div className="p-6 rounded-xl bg-surface-high border border-border-notion/50 animate-in fade-in slide-in-from-top-2 duration-300">
+              <p className="text-sm leading-6 text-foreground/90 font-medium whitespace-pre-wrap">
+                {currentCv.review || 'No review available'}
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       {loading && (
         <div className="space-y-8 animate-pulse">

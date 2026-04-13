@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Briefcase, CheckCircle, ChevronDown, ChevronUp, Route as RouteIcon } from 'lucide-react';
 import api, { ApiClientError, ApiEnvelope } from '@/lib/axios';
+import { useCVContext } from '@/context/CVContext';
 
 interface CVData {
   id: string;
@@ -19,6 +20,8 @@ export default function DashboardCvPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isReviewExpanded, setIsReviewExpanded] = useState(true);
+
+  const { addCv, recentCvs, switchCv } = useCVContext();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,6 +43,9 @@ export default function DashboardCvPage() {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      // Save CV to context (max 2 stored in localStorage)
+      addCv(response.data.data);
       setResult(response.data.data);
     } catch (err) {
       setResult(null);
@@ -195,6 +201,40 @@ export default function DashboardCvPage() {
                 <span className="text-primary">Open</span>
               </Link>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recent CVs Section */}
+      {recentCvs.length > 0 && (
+        <div className="space-y-6 rounded-2xl border border-border-notion bg-surface-medium p-8 shadow-2xl">
+          <div className="space-y-2">
+            <p className="text-xs uppercase tracking-[0.25em] text-muted-notion font-bold">Recent CVs</p>
+            <h2 className="text-2xl font-display font-bold text-foreground">Last {recentCvs.length} Uploads</h2>
+          </div>
+
+          <div className="space-y-3">
+            {recentCvs.map((cv) => (
+              <div
+                key={cv.id}
+                className="flex items-center justify-between rounded-xl border border-border-notion/50 bg-surface-high p-4 hover:border-border-notion transition-all cursor-pointer"
+                onClick={() => {
+                  switchCv(cv.id);
+                  setResult(cv);
+                  setIsReviewExpanded(true);
+                }}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold text-foreground truncate">{cv.fileName}</p>
+                  <p className="text-xs text-muted-notion mt-1">
+                    {cv.review.substring(0, 80)}...
+                  </p>
+                </div>
+                <button className="ml-4 px-4 py-2 rounded-lg text-xs font-bold text-primary hover:bg-surface-medium transition-all">
+                  Switch
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
